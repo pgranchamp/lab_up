@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab'Up - Session de Créativité</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #3498db, #1abc9c);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .intro {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .scenario-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .scenario {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .scenario:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .scenario-header {
+            padding: 15px 20px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scenario-content {
+            padding: 20px;
+            display: none;
+        }
+        .scenario-description {
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+            font-style: italic;
+            color: #555;
+        }
+        .contributions {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .contribution-section {
+            margin-bottom: 15px;
+        }
+        .contribution-section h4 {
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+        }
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        .hidden-content {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            display: none;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .arrow {
+            transition: transform 0.3s;
+        }
+        .rotate {
+            transform: rotate(180deg);
+        }
+        .proposals-content {
+            background-color: #e8f4fc;
+        }
+        .creative-content {
+            background-color: #fff5e6;
+        }
+        @media (max-width: 768px) {
+            .scenario-container {
+                grid-template-columns: 1fr;
+            }
+            .btn-container {
+                flex-direction: column;
+            }
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .green-btn {
+            background-color: #27ae60;
+        }
+        .green-btn:hover {
+            background-color: #219653;
+        }
+        .orange-btn {
+            background-color: #e67e22;
+        }
+        .orange-btn:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Lab'Up - Session de Créativité</h1>
+        <p class="intro">CAPL et son laboratoire d'innovation</p>
+        <p>Explorez 14 scénarios prospectifs et contribuez avec vos idées d'innovation</p>
+    </header>
+
+    <div id="main-content">
+        <h2>Scénarios Prospectifs</h2>
+        <p>Cliquez sur un scénario pour le développer et contribuer à la réflexion. Pour chaque scénario, vous pouvez consulter des propositions existantes et des idées décalées pour stimuler votre créativité.</p>
+        
+        <div class="scenario-container" id="scenarios">
+            <!-- Les scénarios seront générés dynamiquement par JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Données des scénarios importées des documents fournis
+        const scenarios = [
+            {
+                id: 1,
+                title: "Et s'il ne restait que 30 % d'agriculteurs en 2045 ?",
+                description: "Comment organiser la coopération, la technologie et la solidarité pour préserver la production et la valeur ajoutée ?",
+                proposals: `- <strong>Produit</strong> : Services mutualisés intégrés (outils connectés, assurance, suivi IA)
+- <strong>Procédé</strong> : Robotisation partagée entre exploitations d'un même territoire
+- <strong>Mode de production</strong> : Micro-fermes pilotées à distance ou en réseau
+- <strong>Débouchés</strong> : Coopératives de services agricoles autonomes à forte valeur ajoutée
+- <strong>Matières premières</strong> : Variétés hyper-résilientes nécessitant peu d'intervention humaine`,
+                creativeProposals: `- <strong>Produit</strong> : Abonnement 'mon agriculteur personnel' avec vidéo hebdo depuis le champ
+- <strong>Procédé</strong> : Ferme holographique immersive en métavers pour apprentissage à distance
+- <strong>Mode de production</strong> : Agriculture gérée par drones + jumeau numérique de l'exploitation
+- <strong>Débouchés</strong> : Tourisme virtuel à la ferme pour citadins
+- <strong>Matières premières</strong> : Plantes robotisées pilotables via app`
+            },
+            {
+                id: 2,
+                title: "Et si les jeunes ne voulaient plus posséder de terres mais produire ensemble ?",
+                description: "De la propriété à l'usage : peut-on réinventer l'exploitation agricole comme un commun ?",
+                proposals: `- <strong>Produit</strong> : Formules de production agricole en "coliving" rural
+- <strong>Procédé</strong> : Plateformes de co-production agricole en open source
+- <strong>Mode de production</strong> : Exploitations sans propriété foncière (accès par abonnement ou temps partagé)
+- <strong>Débouchés</strong> : Marchés urbains coopératifs "direct producteur connecté"
+- <strong>Matières premières</strong> : Espèces adaptées à la mutualisation (rotation intelligente à plusieurs mains)`,
+                creativeProposals: `- <strong>Produit</strong> : NFT agricoles liés à des lots cultivés en DAO
+- <strong>Procédé</strong> : Vote collectif en ligne pour choisir ce qu'on plante dans la parcelle commune
+- <strong>Mode de production</strong> : Champ collaboratif géré comme un jeu de rôle multi-joueurs
+- <strong>Débouchés</strong> : Abonnement à un jardin collectif géré par appli
+- <strong>Matières premières</strong> : Mélanges créés par crowdsourcing sensoriel (goût, texture, couleur)`
+            },
+            {
+                id: 3,
+                title: "Et si on apprenait à cultiver avec 50 % d'eau en moins ?",
+                description: "Comment adapter les cultures, les outils, les territoires pour continuer à produire autrement ?",
+                proposals: `- <strong>Produit</strong> : Cultures "gourmet sèches" à forte valeur (plantes aromatiques, cactus, etc.)
+- <strong>Procédé</strong> : Irrigation de précision IA + stations météo locales
+- <strong>Mode de production</strong> : Systèmes intégrés solaires + goutte-à-goutte + mulch naturel
+- <strong>Débouchés</strong> : Labels « cultures sobres » pour les marchés bio/premium
+- <strong>Matières premières</strong> : Espèces endémiques ou importées du Sud adaptées à l'aridité`,
+                creativeProposals: `- <strong>Produit</strong> : Gel nutritif à pulvériser sur les feuilles au lieu d'arroser le sol
+- <strong>Procédé</strong> : Cultures en bulles atmosphériques fermées (mini-serres gonflables)
+- <strong>Mode de production</strong> : Hydroculture inversée en sous-sol reconditionné
+- <strong>Débouchés</strong> : Box urbaine "cultures de la sécheresse" pour balcons
+- <strong>Matières premières</strong> : Lichens et cactus comestibles aromatisés`
+            },
+            {
+                id: 4,
+                title: "Et si la CAPL devenait le leader de l'agriculture régénérative en Méditerranée ?",
+                description: "Peut-on passer d'un modèle de résilience à un modèle de régénération (sols, eau, biodiversité) ?",
+                proposals: `- <strong>Produit</strong> : Composts vivants, biochar, et produits "régénératifs" étiquetés
+- <strong>Procédé</strong> : Méthodes sans labour avec capteurs de vie microbienne
+- <strong>Mode de production</strong> : Systèmes sol-plantes-animaux circulaires
+- <strong>Débouchés</strong> : Certifications premium pour marchés européens
+- <strong>Matières premières</strong> : Légumineuses fixatrices d'azote, mélanges végétaux multi-usages`,
+                creativeProposals: `- <strong>Produit</strong> : Coffret 'régénère ton sol toi-même' à destination des particuliers
+- <strong>Procédé</strong> : Troupeaux autonomes pilotés par IA pour pâturage ciblé
+- <strong>Mode de production</strong> : Paysages régénérés par intelligence collective interespèces (insectes + mammifères + humains)
+- <strong>Débouchés</strong> : Abonnement à un mètre carré de biodiversité entretenue
+- <strong>Matières premières</strong> : Champignons intelligents pour dynamiser les racines`
+            },
+            {
+                id: 5,
+                title: "Et si chaque ferme devenait aussi une petite centrale d'énergie ?",
+                description: "Production d'énergie renouvelable, autonomie énergétique, synergies agricoles-énergétiques.",
+                proposals: `- <strong>Produit</strong> : Panneaux solaires intégrés aux serres ou abris mobiles
+- <strong>Procédé</strong> : Co-génération avec résidus végétaux / chaleur stockée
+- <strong>Mode de production</strong> : Fermes hybrides énergie-agriculture
+- <strong>Débouchés</strong> : Revente directe d'énergie à la communauté ou à la coopérative
+- <strong>Matières premières</strong> : Cultures énergétiques secondaires (chanvre, miscanthus)`,
+                creativeProposals: `- <strong>Produit</strong> : Vêtement agricole qui recharge ton téléphone avec ton mouvement
+- <strong>Procédé</strong> : Culture de micro-algues sur toits agricoles pour bioénergie
+- <strong>Mode de production</strong> : Serres solaires rotatives pour suivre le soleil
+- <strong>Débouchés</strong> : Plateforme de trading d'énergie entre agriculteurs
+- <strong>Matières premières</strong> : Plantes phosphorescentes servant à la fois d'éclairage et de culture`
+            },
+            {
+                id: 6,
+                title: "Et si on produisait autant avec deux fois moins d'intrants ?",
+                description: "Quels nouveaux savoir-faire et quelles alliances développer pour y parvenir ?",
+                proposals: `- <strong>Produit</strong> : Variétés ultra-efficientes en nutrition (plantes endophytes symbiotiques)
+- <strong>Procédé</strong> : Systèmes fermés avec boucle de recyclage complète des nutriments
+- <strong>Mode de production</strong> : Cultures en bandes alternées avec autorégulation naturelle
+- <strong>Débouchés</strong> : Marchés spécifiques "sans intrants", premium santé et environnement
+- <strong>Matières premières</strong> : Cultures peu exigeantes (sorgho, pois chiches, lupin doux)`,
+                creativeProposals: `- <strong>Produit</strong> : Plantes auto-fertilisantes boostées par micro-organismes customisés
+- <strong>Procédé</strong> : Systèmes de culture assistés par IA générative qui 'invente' les cycles optimaux
+- <strong>Mode de production</strong> : Champ auto-régulé par intelligence collective végétale
+- <strong>Débouchés</strong> : Marché de produits 'sans aucun apport humain', 100 % naturels
+- <strong>Matières premières</strong> : Mousses et herbes folles revalorisées comme produits de niche`
+            },
+            {
+                id: 7,
+                title: "Et si chaque agriculteur était épaulé par un assistant IA personnel ?",
+                description: "Comment rendre l'IA utile, accessible et rassurante pour tous les profils ?",
+                proposals: `- <strong>Produit</strong> : Assistant vocal agricole multilingue avec interface capteurs
+- <strong>Procédé</strong> : Recommandations contextuelles ultra-localisées selon météo, sol et marché
+- <strong>Mode de production</strong> : Pilotage agricole semi-automatisé à distance (mode copilote)
+- <strong>Débouchés</strong> : Conseil agricole personnalisé en abonnement
+- <strong>Matières premières</strong> : Cultures à gestion fine et haut rendement assisté (tomate, salade, fraise)`,
+                creativeProposals: `- <strong>Produit</strong> : Avatar IA agricole avec personnalité paramétrable selon le style du producteur
+- <strong>Procédé</strong> : Dialogue continu IA-agriculteur pendant les tâches (comme un binôme bavard)
+- <strong>Mode de production</strong> : Pilotage de la ferme en mode RPG (jeu de rôle avec niveaux à franchir)
+- <strong>Débouchés</strong> : Formation et coaching agricole en réalité augmentée
+- <strong>Matières premières</strong> : Crops IA-compatibles avec données open-source intégrées`
+            },
+            {
+                id: 8,
+                title: "Et si la technologie permettait enfin de valoriser le bon sens paysan ?",
+                description: "Capteurs, blockchain, images satellites... au service des savoirs de terrain.",
+                proposals: `- <strong>Produit</strong> : Carnet numérique intelligent de pratiques agricoles traditionnelles
+- <strong>Procédé</strong> : Modélisation des pratiques anciennes croisées avec les données modernes
+- <strong>Mode de production</strong> : Mix innovation/expérience : calendrier lunaire + capteurs IoT
+- <strong>Débouchés</strong> : Formation, certification, ou consulting basé sur savoirs empiriques
+- <strong>Matières premières</strong> : Cultures rustiques anciennes retrouvées (épeautre, petit pois, fève)`,
+                creativeProposals: `- <strong>Produit</strong> : Capsules d'expérience sensorielle issues de témoignages paysans (audio/VR)
+- <strong>Procédé</strong> : Mémoire des gestes agricoles sauvegardée et remixée façon TikTok coopératif
+- <strong>Mode de production</strong> : Systèmes d'apprentissage croisé intergénérationnel IA-humain
+- <strong>Débouchés</strong> : Marché de l'agro-nostalgie premium (le champ d'avant)
+- <strong>Matières premières</strong> : Graines anciennes réveillées par intelligence bio-historique`
+            },
+            {
+                id: 9,
+                title: "Et si la CAPL devenait la première coopérative à vendre directement aux consommateurs ?",
+                description: "Circuits courts augmentés, logistique optimisée, marque coopérative forte.",
+                proposals: `- <strong>Produit</strong> : Box saisonnières multi-producteurs (mode circuit court as-a-service)
+- <strong>Procédé</strong> : Plateforme numérique avec notation, traçabilité, contenus immersifs
+- <strong>Mode de production</strong> : Production contractualisée à la demande (en fonction de la prévente)
+- <strong>Débouchés</strong> : Marché grand public + restauration collective + export coopératif
+- <strong>Matières premières</strong> : Produits identitaires locaux (melons, cerises, raisins secs, pois chiches)`,
+                creativeProposals: `- <strong>Produit</strong> : Box mystère où le client découvre ce qu'il mange et de qui
+- <strong>Procédé</strong> : Production influencée par les émotions collectées chez les clients (satisfaction = influence du mix)
+- <strong>Mode de production</strong> : Parcelles choisies en live par les abonnés sur Twitch
+- <strong>Débouchés</strong> : Boutique mobile à réalité augmentée sur marché flottant ou tracteur-showroom
+- <strong>Matières premières</strong> : Plantes qui changent de goût selon les traitements émotionnels`
+            },
+            {
+                id: 10,
+                title: "Et si demain, les consommateurs voulaient 100 % de traçabilité positive ?",
+                description: "Transparence, valeur perçue, confiance renforcée... jusqu'où aller dans la preuve ?",
+                proposals: `- <strong>Produit</strong> : Étiquettes augmentées (QR code dynamique avec vidéos du champ)
+- <strong>Procédé</strong> : Blockchain coopérative avec labels CAPL intégrés
+- <strong>Mode de production</strong> : Parcelles connectées avec preuve d'impact (biodiversité, CO2)
+- <strong>Débouchés</strong> : Magasins traçabilité extrême, restauration premium, export haut de gamme
+- <strong>Matières premières</strong> : Produits avec forte histoire ou territoire (huile d'olive, miel, figue, caroube)`,
+                creativeProposals: `- <strong>Produit</strong> : Étiquette sonore : tu écoutes la vie de ta salade avant de l'acheter
+- <strong>Procédé</strong> : Caméras-poètes dans les champs qui racontent la croissance des cultures
+- <strong>Mode de production</strong> : Parcelles ambassadeurs avec webcam 24/7 + personnalité des sols
+- <strong>Débouchés</strong> : Marché des produits narratifs (tu manges une histoire)
+- <strong>Matières premières</strong> : Plantes 'confessionnelles' : leur cycle est raconté, filmé, partagé`
+            },
+            {
+                id: 11,
+                title: "Et si demain, la CAPL décidait de créer une filière ananas en Provence ?",
+                description: "Adaptation des espèces, transfert de technologies (après tout, les bretons ont réussi à cultiver la vanille au sein de leur territoire)",
+                proposals: `- <strong>Produit</strong> : Ananas de terroir méditerranéen (goût unique, circuits courts)
+- <strong>Procédé</strong> : Serres tropicalisées low tech, recyclage thermique des bâtiments agricoles
+- <strong>Mode de production</strong> : Cultures sous ombrières connectées à énergie solaire
+- <strong>Débouchés</strong> : Marché premium local, transformation (jus, confitures, cosmétiques)
+- <strong>Matières premières</strong> : Variétés d'ananas hybrides adaptées aux microclimats provençaux
+- <strong>Autres</strong> : Label 'Ananas de Provence', storytelling terroir et résilience climatique`,
+                creativeProposals: `- <strong>Produit</strong> : Ananas givrés à planter sur toitures de maisons individuelles
+- <strong>Procédé</strong> : Microclimats créés par drones pulvérisateurs de brume chaude
+- <strong>Mode de production</strong> : Ananas cultivés sous tubes solaires transparents en spirale
+- <strong>Débouchés</strong> : Club privé de dégustation d'ananas local à l'aveugle
+- <strong>Matières premières</strong> : Ananas mutants colorés selon le sol
+- <strong>Autres</strong> : Collaboration artistique avec parfumeurs pour signature olfactive CAPL`
+            },
+            {
+                id: 12,
+                title: "Et si demain, la CAPL créait des filiales autour de la Méditerranée ?",
+                description: "Agrandissement du réseau, liens étendus, achat de technologies, sécurisation des approvisionnements.",
+                proposals: `- <strong>Produit</strong> : Gamme méditerranéenne collaborative (huiles, fruits secs, épices, condiments)
+- <strong>Procédé</strong> : Standardisation coopérative des pratiques agricoles durables entre pays
+- <strong>Mode de production</strong> : Réseau de fermes-sœurs intégrées au sein de chaque filiale
+- <strong>Débouchés</strong> : Rayonnement de la marque CAPL en Europe et Afrique du Nord
+- <strong>Matières premières</strong> : Variétés méditerranéennes mutualisées (grenade, figue, caroube)
+- <strong>Autres</strong> : Plateforme de transfert de savoir-faire et de technologies agricoles`,
+                creativeProposals: `- <strong>Produit</strong> : Coffrets multi-goûts transméditerranéens issus d'un storytelling culinaire
+- <strong>Procédé</strong> : Production itinérante sur péniches agricoles entre ports méditerranéens
+- <strong>Mode de production</strong> : Réseau de fermes expérimentales tenues par des artistes-agriculteurs
+- <strong>Débouchés</strong> : Festival annuel 'Goûts Croisés' CAPL en France et au Maghreb
+- <strong>Matières premières</strong> : Assemblages inédits entre plantes grecques, berbères, occitanes
+- <strong>Autres</strong> : Plateforme collaborative de recettes méditerranéennes nourries par l'IA`
+            },
+            {
+                id: 13,
+                title: "Et si demain, la CAPL était entièrement pilotée par l'IA ?",
+                description: "Logiques métiers au coeur de la CAPL, veille et prospective, négociations fournisseurs optimisées par IA...",
+                proposals: `- <strong>Produit</strong> : Offre de conseils agricoles automatisés 24/7 par assistant IA coopératif
+- <strong>Procédé</strong> : Optimisation continue des flux logistiques et des calendriers culturaux
+- <strong>Mode de production</strong> : Fermes IA-pilotées avec anticipation des aléas climatiques et marché
+- <strong>Débouchés</strong> : Service prédictif de performance et d'ajustement pour les adhérents
+- <strong>Matières premières</strong> : Culture de données comme ressource stratégique
+- <strong>Autres</strong> : Nouvelle gouvernance CAPL fondée sur l'analyse augmentée et la co-décision`,
+                creativeProposals: `- <strong>Produit</strong> : Offre d'IA à personnalités multiples (ex. IA poète, IA écolo, IA rentabilité max)
+- <strong>Procédé</strong> : Jury automatique d'innovation qui note les idées des adhérents
+- <strong>Mode de production</strong> : Ferme entièrement gérée par simulation comportementale de l'IA
+- <strong>Débouchés</strong> : Abonnement 'sérénité totale' : vous déléguez, l'IA cultive
+- <strong>Matières premières</strong> : Cultures sélectionnées selon les émotions de l'IA du moment
+- <strong>Autres</strong> : Concours annuel 'IA contre humains' : qui gère le meilleur champ ?`
+            },
+            {
+                id: 14,
+                title: "Et si demain, un acteur non issu du monde agricole mais du monde IA venait disrupter la CAPL ?",
+                description: "Comment réagir face à l'arrivée d'acteurs technologiques majeurs dans le secteur agricole ?",
+                proposals: `- <strong>Produit</strong> : Marketplace agricole 100 % IA entre producteurs et acheteurs en direct
+- <strong>Procédé</strong> : Négociation automatisée + tarification dynamique selon l'offre et la météo
+- <strong>Mode de production</strong> : Agriculture optimisée par vision par satellite et robotique à la demande
+- <strong>Débouchés</strong> : Suppression des intermédiaires, contractualisation instantanée B2B
+- <strong>Matières premières</strong> : Sélection génomique dirigée par IA selon les tendances de consommation
+- <strong>Autres</strong> : Remise en question du modèle coopératif traditionnel : que garder, que transformer ?`,
+                creativeProposals: `- <strong>Produit</strong> : Cultures à la demande générées via IA à partir de tendances TikTok
+- <strong>Procédé</strong> : Champ 'cloud' où des millions de simulations d'agriculture tournent en parallèle
+- <strong>Mode de production</strong> : IA qui apprend à cultiver comme un humain... pour mieux l'imiter et le dépasser
+- <strong>Débouchés</strong> : Service de livraison de 'panier prédictif' (ce que vous voudrez bientôt consommer)
+- <strong>Matières premières</strong> : Plantes programmées génétiquement pour créer de nouveaux goûts viraux
+- <strong>Autres</strong> : CAPL devient une licorne agri-tech en duel avec Amazon Agro`
+            }
+        ];
+
+        // Générer les scénarios dans le DOM
+        const scenariosContainer = document.getElementById('scenarios');
+        
+        scenarios.forEach(scenario => {
+            const scenarioElement = document.createElement('div');
+            scenarioElement.className = 'scenario';
+            scenarioElement.id = `scenario-${scenario.id}`;
+            
+            // Créer l'en-tête du scénario
+            const headerElement = document.createElement('div');
+            headerElement.className = 'scenario-header';
+            headerElement.innerHTML = `
+                <span>${scenario.title}</span>
+                <span class="arrow">▼</span>
+            `;
+            
+            // Créer le contenu du scénario
+            const contentElement = document.createElement('div');
+            contentElement.className = 'scenario-content';
+            contentElement.innerHTML = `
+                <div class="scenario-description">
+                    <p>${scenario.description}</p>
+                </div>
+                
+                <div class="contributions">
+                    <h3>Contributions</h3>
+                    
+                    <div class="contribution-section">
+                        <h4>Produit</h4>
+                        <textarea id="product-${scenario.id}" placeholder="Idées liées aux produits..."></textarea>
+                    </div>
+                    
+                    <div class="contribution-section">
+                        <h4>Procédé</h4>
+                        <textarea id="process-${scenario.id}" placeholder="Idées liées aux procédés..."></textarea>
+                    </div>
+                    
+                    <div class="contribution-section">
+                        <h4>Mode de production</h4>
+                        <textarea id="production-${scenario.id}" placeholder="Idées liées aux modes de production..."></textarea>
+                    </div>
+                    
+                    <div class="contribution-section">
+                        <h4>Débouchés</h4>
+                        <textarea id="market-${scenario.id}" placeholder="Idées liées aux débouchés..."></textarea>
+                    </div>
+                    
+                    <div class="contribution-section">
+                        <h4>Matières premières</h4>
+                        <textarea id="materials-${scenario.id}" placeholder="Idées liées aux matières premières..."></textarea>
+                    </div>
+                    
+                    <div class="contribution-section">
+                        <h4>Autres</h4>
+                        <textarea id="other-${scenario.id}" placeholder="Autres idées..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button class="show-proposals" data-scenario="${scenario.id}">Afficher les propositions existantes</button>
+                    <button class="show-creative" data-scenario="${scenario.id}">Afficher les idées décalées</button>
+                </div>
+                
+                <div id="proposals-${scenario.id}" class="hidden-content proposals-content">
+                    <h4>Propositions existantes</h4>
+                    <p>${scenario.proposals}</p>
+                </div>
+                
+                <div id="creative-${scenario.id}" class="hidden-content creative-content">
+                    <h4>Idées décalées</h4>
+                    <p>${scenario.creativeProposals}</p>
+                </div>
+            `;
+            
+            // Ajouter les éléments au scénario
+            scenarioElement.appendChild(headerElement);
+            scenarioElement.appendChild(contentElement);
+            
+            // Ajouter le scénario au conteneur
+            scenariosContainer.appendChild(scenarioElement);
+            
+            // Ajouter les écouteurs d'événements
+            headerElement.addEventListener('click', () => {
+                const content = headerElement.nextElementSibling;
+                const isOpen = content.style.display === 'block';
+                
+                // Fermer tous les contenus ouverts
+                document.querySelectorAll('.scenario-content').forEach(element => {
+                    element.style.display = 'none';
+                });
+                document.querySelectorAll('.arrow').forEach(arrow => {
+                    arrow.classList.remove('rotate');
+                });
+                
+                // Ouvrir ou fermer le contenu actuel
+                if (!isOpen) {
+                    content.style.display = 'block';
+                    headerElement.querySelector('.arrow').classList.add('rotate');
+                }
+            });
+        });
+        
+        // Écouteurs pour les boutons d'affichage des propositions
+        document.querySelectorAll('.show-proposals').forEach(button => {
+            button.addEventListener('click', () => {
+                const scenarioId = button.getAttribute('data-scenario');
+                const proposalsElement = document.getElementById(`proposals-${scenarioId}`);
+                
+                if (proposalsElement.style.display === 'block') {
+                    proposalsElement.style.display = 'none';
+                    button.textContent = 'Afficher les propositions existantes';
+                } else {
+                    proposalsElement.style.display = 'block';
+                    button.textContent = 'Masquer les propositions existantes';
+                }
+            });
+        });
+        
+        // Écouteurs pour les boutons d'affichage des idées créatives
+        document.querySelectorAll('.show-creative').forEach(button => {
+            button.addEventListener('click', () => {
+                const scenarioId = button.getAttribute('data-scenario');
+                const creativeElement = document.getElementById(`creative-${scenarioId}`);
+                
+                if (creativeElement.style.display === 'block') {
+                    creativeElement.style.display = 'none';
+                    button.textContent = 'Afficher les idées décalées';
+                } else {
+                    creativeElement.style.display = 'block';
+                    button.textContent = 'Masquer les idées décalées';
+                }
+            });
+        });
+
+        // Fonction pour sauvegarder les données
+        function saveData() {
+            const contributionsData = {};
+            
+            scenarios.forEach(scenario => {
+                contributionsData[scenario.id] = {
+                    product: document.getElementById(`product-${scenario.id}`).value,
+                    process: document.getElementById(`process-${scenario.id}`).value,
+                    production: document.getElementById(`production-${scenario.id}`).value,
+                    market: document.getElementById(`market-${scenario.id}`).value,
+                    materials: document.getElementById(`materials-${scenario.id}`).value,
+                    other: document.getElementById(`other-${scenario.id}`).value
+                };
+            });
+            
+            localStorage.setItem('labUpContributions', JSON.stringify(contributionsData));
+            alert('Données sauvegardées avec succès!');
+        }
+
+        // Fonction pour charger les données sauvegardées
+        function loadData() {
+            const savedData = localStorage.getItem('labUpContributions');
+            
+            if (savedData) {
+                const contributionsData = JSON.parse(savedData);
+                
+                scenarios.forEach(scenario => {
+                    if (contributionsData[scenario.id]) {
+                        document.getElementById(`product-${scenario.id}`).value = contributionsData[scenario.id].product || '';
+                        document.getElementById(`process-${scenario.id}`).value = contributionsData[scenario.id].process || '';
+                        document.getElementById(`production-${scenario.id}`).value = contributionsData[scenario.id].production || '';
+                        document.getElementById(`market-${scenario.id}`).value = contributionsData[scenario.id].market || '';
+                        document.getElementById(`materials-${scenario.id}`).value = contributionsData[scenario.id].materials || '';
+                        document.getElementById(`other-${scenario.id}`).value = contributionsData[scenario.id].other || '';
+                    }
+                });
+            }
+        }
+
+        // Fonction pour exporter les données
+        function exportData() {
+            const contributionsData = {};
+            
+            scenarios.forEach(scenario => {
+                contributionsData[scenario.id] = {
+                    title: scenario.title,
+                    description: scenario.description,
+                    contributions: {
+                        product: document.getElementById(`product-${scenario.id}`).value,
+                        process: document.getElementById(`process-${scenario.id}`).value,
+                        production: document.getElementById(`production-${scenario.id}`).value,
+                        market: document.getElementById(`market-${scenario.id}`).value,
+                        materials: document.getElementById(`materials-${scenario.id}`).value,
+                        other: document.getElementById(`other-${scenario.id}`).value
+                    }
+                };
+            });
+            
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(contributionsData, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "lab_up_contributions.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        // Ajouter des boutons pour sauvegarder et exporter les données
+        const mainContent = document.getElementById('main-content');
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.className = 'controls';
+        buttonsContainer.innerHTML = `
+            <button onclick="saveData()" class="action-btn green-btn">Sauvegarder les contributions</button>
+            <button onclick="exportData()" class="action-btn orange-btn">Exporter les données</button>
+            <button onclick="printAllData()" class="action-btn">Imprimer toutes les contributions</button>
+        `;
+        mainContent.appendChild(buttonsContainer);
+        
+        // Ajouter un footer
+        const footer = document.createElement('footer');
+        footer.innerHTML = `
+            <p>Lab'Up - Session de créativité CAPL</p>
+            <p>Créé pour aider à la réussite des projets Lab'Up par Pierre Granchamp et ses IA</p>
+	    <p>Contact : 06 72 21 71 09 / pierre.granchamp@finamars.com</p>
+        `;
+        document.body.appendChild(footer);
+
+        // Fonction pour imprimer toutes les contributions
+        function printAllData() {
+            let printContent = `<h1>Contributions Lab'Up - CAPL</h1>`;
+            
+            scenarios.forEach(scenario => {
+                printContent += `<h2>${scenario.title}</h2>`;
+                printContent += `<p><em>${scenario.description}</em></p>`;
+                
+                printContent += `<h3>Contributions</h3>`;
+                printContent += `<h4>Produit</h4>`;
+                printContent += `<p>${document.getElementById(`product-${scenario.id}`).value || "Aucune contribution"}</p>`;
+                
+                printContent += `<h4>Procédé</h4>`;
+                printContent += `<p>${document.getElementById(`process-${scenario.id}`).value || "Aucune contribution"}</p>`;
+                
+                printContent += `<h4>Mode de production</h4>`;
+                printContent += `<p>${document.getElementById(`production-${scenario.id}`).value || "Aucune contribution"}</p>`;
+                
+                printContent += `<h4>Débouchés</h4>`;
+                printContent += `<p>${document.getElementById(`market-${scenario.id}`).value || "Aucune contribution"}</p>`;
+                
+                printContent += `<h4>Matières premières</h4>`;
+                printContent += `<p>${document.getElementById(`materials-${scenario.id}`).value || "Aucune contribution"}</p>`;
+                
+                printContent += `<h4>Autres</h4>`;
+                printContent += `<p>${document.getElementById(`other-${scenario.id}`).value || "Aucune contribution"}</p>`;
+                
+                printContent += `<hr>`;
+            });
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Contributions Lab'Up - CAPL</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; line-height: 1.6; padding: 20px; }
+                            h1 { text-align: center; color: #3498db; }
+                            h2 { color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+                            h3 { color: #3498db; }
+                            h4 { color: #7f8c8d; margin-bottom: 5px; }
+                            p { margin-top: 0; }
+                            hr { margin: 30px 0; border: none; border-top: 2px dashed #eee; }
+                        </style>
+                    </head>
+                    <body>
+                        ${printContent}
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Charger les données au démarrage
+        loadData();
+    </script>
+</body>
+</html>
