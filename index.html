@@ -175,6 +175,64 @@
         .orange-btn:hover {
             background-color: #d35400;
         }
+<!-- Ajoutez ces styles CSS à la section <style> existante -->
+    .create-scenario-section {
+        margin-bottom: 20px;
+        text-align: right;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+    
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    
+    .form-group textarea {
+        min-height: 100px;
+    }
     </style>
 </head>
 <body>
@@ -187,6 +245,30 @@
     <div id="main-content">
         <h2>Scénarios Prospectifs</h2>
         <p>Cliquez sur un scénario pour le développer et contribuer à la réflexion. Pour chaque scénario, vous pouvez consulter des propositions existantes et des idées décalées pour stimuler votre créativité.</p>
+
+<!-- Ajoutez ce code HTML juste avant la div avec l'id "scenarios" -->
+<div class="create-scenario-section">
+    <button id="create-scenario-btn" class="action-btn green-btn">Créer un nouveau scénario</button>
+</div>
+
+<!-- Ajoutez ce formulaire modal pour la création de scénario -->
+<div id="create-scenario-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2>Créer un nouveau scénario</h2>
+        <form id="new-scenario-form">
+            <div class="form-group">
+                <label for="new-scenario-title">Titre du scénario:</label>
+                <input type="text" id="new-scenario-title" placeholder="Et si..." required>
+            </div>
+            <div class="form-group">
+                <label for="new-scenario-description">Description:</label>
+                <textarea id="new-scenario-description" placeholder="Décrivez votre scénario..." required></textarea>
+            </div>
+            <button type="submit" class="action-btn green-btn">Ajouter le scénario</button>
+        </form>
+    </div>
+</div>
         
         <div class="scenario-container" id="scenarios">
             <!-- Les scénarios seront générés dynamiquement par JavaScript -->
@@ -693,6 +775,187 @@
 
         // Charger les données au démarrage
         loadData();
+
+// Variables pour gérer l'ID des nouveaux scénarios
+    let nextScenarioId = scenarios.length + 1;
+    
+    // Fonction pour ouvrir le modal de création de scénario
+    document.getElementById('create-scenario-btn').addEventListener('click', () => {
+        document.getElementById('create-scenario-modal').style.display = 'block';
+    });
+    
+    // Fonction pour fermer le modal
+    document.querySelector('.close-modal').addEventListener('click', () => {
+        document.getElementById('create-scenario-modal').style.display = 'none';
+    });
+    
+    // Fermer le modal si on clique en dehors
+    window.addEventListener('click', (event) => {
+        if (event.target === document.getElementById('create-scenario-modal')) {
+            document.getElementById('create-scenario-modal').style.display = 'none';
+        }
+    });
+    
+    // Fonction pour créer un nouveau scénario
+    document.getElementById('new-scenario-form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        
+        // Récupérer les valeurs du formulaire
+        const title = document.getElementById('new-scenario-title').value;
+        const description = document.getElementById('new-scenario-description').value;
+        
+        // Créer un nouvel objet scénario
+        const newScenario = {
+            id: nextScenarioId++,
+            title: title,
+            description: description,
+            proposals: `- <strong>Produit</strong> : À compléter
+- <strong>Procédé</strong> : À compléter
+- <strong>Mode de production</strong> : À compléter
+- <strong>Débouchés</strong> : À compléter
+- <strong>Matières premières</strong> : À compléter`,
+            creativeProposals: `- <strong>Produit</strong> : À compléter
+- <strong>Procédé</strong> : À compléter
+- <strong>Mode de production</strong> : À compléter
+- <strong>Débouchés</strong> : À compléter
+- <strong>Matières premières</strong> : À compléter`
+        };
+        
+        // Ajouter le nouveau scénario à l'array
+        scenarios.push(newScenario);
+        
+        // Créer l'élément DOM pour le nouveau scénario
+        const scenarioElement = document.createElement('div');
+        scenarioElement.className = 'scenario';
+        scenarioElement.id = `scenario-${newScenario.id}`;
+        
+        // Créer l'en-tête du scénario
+        const headerElement = document.createElement('div');
+        headerElement.className = 'scenario-header';
+        headerElement.innerHTML = `
+            <span>${newScenario.title}</span>
+            <span class="arrow">▼</span>
+        `;
+        
+        // Créer le contenu du scénario
+        const contentElement = document.createElement('div');
+        contentElement.className = 'scenario-content';
+        contentElement.innerHTML = `
+            <div class="scenario-description">
+                <p>${newScenario.description}</p>
+            </div>
+            
+            <div class="contributions">
+                <h3>Contributions</h3>
+                
+                <div class="contribution-section">
+                    <h4>Produit</h4>
+                    <textarea id="product-${newScenario.id}" placeholder="Idées liées aux produits..."></textarea>
+                </div>
+                
+                <div class="contribution-section">
+                    <h4>Procédé</h4>
+                    <textarea id="process-${newScenario.id}" placeholder="Idées liées aux procédés..."></textarea>
+                </div>
+                
+                <div class="contribution-section">
+                    <h4>Mode de production</h4>
+                    <textarea id="production-${newScenario.id}" placeholder="Idées liées aux modes de production..."></textarea>
+                </div>
+                
+                <div class="contribution-section">
+                    <h4>Débouchés</h4>
+                    <textarea id="market-${newScenario.id}" placeholder="Idées liées aux débouchés..."></textarea>
+                </div>
+                
+                <div class="contribution-section">
+                    <h4>Matières premières</h4>
+                    <textarea id="materials-${newScenario.id}" placeholder="Idées liées aux matières premières..."></textarea>
+                </div>
+                
+                <div class="contribution-section">
+                    <h4>Autres</h4>
+                    <textarea id="other-${newScenario.id}" placeholder="Autres idées..."></textarea>
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="show-proposals" data-scenario="${newScenario.id}">Afficher les propositions existantes</button>
+                <button class="show-creative" data-scenario="${newScenario.id}">Afficher les idées décalées</button>
+            </div>
+            
+            <div id="proposals-${newScenario.id}" class="hidden-content proposals-content">
+                <h4>Propositions existantes</h4>
+                <p>${newScenario.proposals}</p>
+            </div>
+            
+            <div id="creative-${newScenario.id}" class="hidden-content creative-content">
+                <h4>Idées décalées</h4>
+                <p>${newScenario.creativeProposals}</p>
+            </div>
+        `;
+        
+        // Ajouter les éléments au scénario
+        scenarioElement.appendChild(headerElement);
+        scenarioElement.appendChild(contentElement);
+        
+        // Ajouter le scénario au conteneur
+        document.getElementById('scenarios').appendChild(scenarioElement);
+        
+        // Ajouter les écouteurs d'événements pour le nouveau scénario
+        headerElement.addEventListener('click', () => {
+            const content = headerElement.nextElementSibling;
+            const isOpen = content.style.display === 'block';
+            
+            // Fermer tous les contenus ouverts
+            document.querySelectorAll('.scenario-content').forEach(element => {
+                element.style.display = 'none';
+            });
+            document.querySelectorAll('.arrow').forEach(arrow => {
+                arrow.classList.remove('rotate');
+            });
+            
+            // Ouvrir ou fermer le contenu actuel
+            if (!isOpen) {
+                content.style.display = 'block';
+                headerElement.querySelector('.arrow').classList.add('rotate');
+            }
+        });
+        
+        // Ajouter les écouteurs pour les boutons d'affichage
+        const newProposalsButton = scenarioElement.querySelector('.show-proposals');
+        newProposalsButton.addEventListener('click', () => {
+            const proposalsElement = document.getElementById(`proposals-${newScenario.id}`);
+            
+            if (proposalsElement.style.display === 'block') {
+                proposalsElement.style.display = 'none';
+                newProposalsButton.textContent = 'Afficher les propositions existantes';
+            } else {
+                proposalsElement.style.display = 'block';
+                newProposalsButton.textContent = 'Masquer les propositions existantes';
+            }
+        });
+        
+        const newCreativeButton = scenarioElement.querySelector('.show-creative');
+        newCreativeButton.addEventListener('click', () => {
+            const creativeElement = document.getElementById(`creative-${newScenario.id}`);
+            
+            if (creativeElement.style.display === 'block') {
+                creativeElement.style.display = 'none';
+                newCreativeButton.textContent = 'Afficher les idées décalées';
+            } else {
+                creativeElement.style.display = 'block';
+                newCreativeButton.textContent = 'Masquer les idées décalées';
+            }
+        });
+        
+        // Réinitialiser le formulaire et fermer le modal
+        document.getElementById('new-scenario-form').reset();
+        document.getElementById('create-scenario-modal').style.display = 'none';
+        
+        // Option : ouvrir automatiquement le nouveau scénario
+        headerElement.click();
+    });
     </script>
 </body>
 </html>
